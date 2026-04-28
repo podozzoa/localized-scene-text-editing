@@ -18,6 +18,15 @@ class TranslationSettings:
     local_model_name: str = "facebook/nllb-200-distilled-600M"
 
 
+@dataclass(frozen=True)
+class TranslationBackendStatus:
+    requested_provider: str
+    active_provider: str
+    fallback_active: bool
+    backend_available: bool
+    backend_error: str | None = None
+
+
 class BaseTranslator:
     def translate(self, text: str, target_lang: str) -> str:
         raise NotImplementedError
@@ -62,6 +71,15 @@ class IdentityTranslator(BaseTranslator):
     @staticmethod
     def _contains_thai(text: str) -> bool:
         return any(0x0E00 <= ord(char) <= 0x0E7F for char in text)
+
+    @staticmethod
+    def contains_source_script(text: str, source_lang: str) -> bool:
+        source = source_lang.lower()
+        if source in {"ko", "kr"}:
+            return IdentityTranslator._contains_hangul(text)
+        if source == "th":
+            return IdentityTranslator._contains_thai(text)
+        return False
 
 
 class OpenAICompatibleTranslator(BaseTranslator):
@@ -137,7 +155,7 @@ class OpenAICompatibleTranslator(BaseTranslator):
                     ),
                 },
             ],
-            temperature=0.3,
+            temperature=0.0,
         )
 
     def generate_candidates(
@@ -196,7 +214,7 @@ class OpenAICompatibleTranslator(BaseTranslator):
                 },
                 {"role": "user", "content": prompt},
             ],
-            temperature=0.7,
+            temperature=0.0,
         )
         lines = [self._sanitize_candidate(line) for line in raw.splitlines()]
         candidates: list[str] = []
@@ -367,7 +385,9 @@ class TranslatorAdapter(BaseTranslator):
                 local_model_name=settings.local_model_name or env_settings.local_model_name,
             )
         self.fallback = IdentityTranslator()
+        self.backend_error: str | None = None
         self.backend = self._build_backend()
+        self.active_provider = self._resolve_active_provider()
 
     def _build_backend(self) -> BaseTranslator:
         provider = self.settings.provider.lower()
@@ -378,7 +398,8 @@ class TranslatorAdapter(BaseTranslator):
         if provider == "hf_local":
             try:
                 return HuggingFaceLocalTranslator(self.settings)
-            except Exception:
+            except Exception as exc:
+                self.backend_error = str(exc)
                 return self.fallback
 
         if provider in {"auto", "openai", "openai_compatible"} and self.settings.api_key:
@@ -386,12 +407,53 @@ class TranslatorAdapter(BaseTranslator):
 
         return self.fallback
 
+    def _resolve_active_provider(self) -> str:
+        if isinstance(self.backend, IdentityTranslator):
+            return "identity"
+        if isinstance(self.backend, HuggingFaceLocalTranslator):
+            return "hf_local"
+        if isinstance(self.backend, OpenAICompatibleTranslator):
+            return "openai_compatible"
+        return type(self.backend).__name__
+
+    def status(self) -> TranslationBackendStatus:
+        fallback_active = isinstance(self.backend, IdentityTranslator)
+        return TranslationBackendStatus(
+            requested_provider=self.settings.provider,
+            active_provider=self.active_provider,
+            fallback_active=fallback_active,
+            backend_available=not fallback_active,
+            backend_error=self.backend_error,
+        )
+
+    def status_dict(self) -> dict:
+        return self.status().__dict__
+
+    def _requires_real_translation(self, text: str, target_lang: str) -> bool:
+        if target_lang.lower() == self.settings.source_lang.lower():
+            return False
+        if IdentityTranslator._is_ascii_brandlike(text):
+            return False
+        return IdentityTranslator.contains_source_script(text, self.settings.source_lang)
+
+    def _fallback_text(self, text: str, target_lang: str) -> str:
+        if self._requires_real_translation(text, target_lang):
+            return ""
+        return self.fallback.translate(text, target_lang)
+
     def translate(self, text: str, target_lang: str) -> str:
         try:
             translated = self.backend.translate(text, target_lang)
         except Exception:
-            translated = self.fallback.translate(text, target_lang)
-        return translated.strip() or text.strip()
+            translated = self._fallback_text(text, target_lang)
+        if isinstance(self.backend, IdentityTranslator):
+            translated = self._fallback_text(text, target_lang)
+        translated = translated.strip()
+        if translated:
+            return translated
+        if self._requires_real_translation(text, target_lang):
+            return ""
+        return text.strip()
 
     def generate_candidates(
         self,
@@ -403,7 +465,10 @@ class TranslatorAdapter(BaseTranslator):
         try:
             candidates = self.backend.generate_candidates(text, target_lang, max_chars, role)
         except Exception:
-            candidates = self.fallback.generate_candidates(text, target_lang, max_chars, role)
+            fallback = self._fallback_text(text, target_lang)
+            candidates = [fallback] if fallback else []
+        if isinstance(self.backend, IdentityTranslator) and self._requires_real_translation(text, target_lang):
+            candidates = []
         normalized: list[str] = []
         seen: set[str] = set()
         for candidate in candidates:
@@ -412,4 +477,7 @@ class TranslatorAdapter(BaseTranslator):
                 continue
             seen.add(item)
             normalized.append(item)
-        return normalized or [self.translate(text, target_lang)]
+        if normalized:
+            return normalized
+        fallback = self.translate(text, target_lang)
+        return [fallback] if fallback else []

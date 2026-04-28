@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HarnessGatePolicy",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "description",
+    "thresholds"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "thresholds": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "baseline_run": "loop006_baseline_openai",
+  "candidate_run": "loop006_candidate_openai",
+  "policy_id": "gate-default-v1",
+  "promotion_status": "promote",
+  "blocking_reasons": [],
+  "required_followups": []
+}

@@ -1,0 +1,15 @@
+{
+  "zero_score_item_count": 1,
+  "zero_score_inputs": [
+    "benchmarks\\datasets\\smoke\\images\\sample1.png"
+  ],
+  "item_warning_counts": {
+    "품질 점수가 임계값보다 낮습니다.": 1
+  },
+  "region_count": 8,
+  "zero_score_region_count": 0,
+  "region_warning_counts": {
+    "non-editable region skipped": 5
+  },
+  "missing_quality_artifacts": []
+}

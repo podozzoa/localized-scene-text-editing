@@ -1,0 +1,10 @@
+{
+  "loop_id": "2026-04-28-loop-005-translation-readiness",
+  "status": "hold",
+  "translation_backend_status_exposed": true,
+  "fallback_blocks_source_script_for_cross_language_target": true,
+  "brandlike_ascii_passthrough": true,
+  "fresh_harness_run_completed": false,
+  "decision": "hold",
+  "next_loop": "configure a real translation backend and rerun approved smoke baseline/candidate"
+}

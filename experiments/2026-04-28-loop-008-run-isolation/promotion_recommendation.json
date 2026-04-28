@@ -1,0 +1,8 @@
+{
+  "baseline_run": "loop008_baseline_isolated",
+  "candidate_run": "loop008_candidate_isolated",
+  "policy_id": "gate-default-v1",
+  "promotion_status": "promote",
+  "blocking_reasons": [],
+  "required_followups": []
+}

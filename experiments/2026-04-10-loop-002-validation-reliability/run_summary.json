@@ -1,0 +1,10 @@
+{
+  "loop_id": "2026-04-10-loop-002-validation-reliability",
+  "status": "promote",
+  "overall_score_delta": 0.0,
+  "critical_failures": 0,
+  "regression_count": 0,
+  "manual_review_count": 0,
+  "decision": "promote",
+  "next_loop": "quality-targeted candidate loop"
+}

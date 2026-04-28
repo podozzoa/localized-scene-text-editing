@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 import re
 import unicodedata
 
@@ -32,6 +33,11 @@ class OCRQualityValidator(IQualityValidator):
             "kr": "korean",
             "en": "en",
             "vi": "en",
+            "ja": "japan",
+            "jp": "japan",
+            "zh": "ch",
+            "cn": "ch",
+            "th": "th",
         }
         return mapping.get(target_lang.lower(), fallback)
 
@@ -57,8 +63,10 @@ class OCRQualityValidator(IQualityValidator):
             expected_tokens = self._normalize_tokens(expected)
             if not expected_tokens:
                 continue
-            matched = sum(1 for token in expected_tokens if token in actual_tokens)
-            scores.append(matched / len(expected_tokens))
+            actual_counts = Counter(actual_tokens)
+            expected_counts = Counter(expected_tokens)
+            matched = sum(min(actual_counts[token], count) for token, count in expected_counts.items())
+            scores.append(matched / sum(expected_counts.values()))
 
         if not scores:
             return 0.0

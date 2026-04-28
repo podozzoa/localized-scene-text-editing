@@ -1,0 +1,29 @@
+# Quality Diagnosis
+
+- run_name: loop009_baseline_artifacts
+- average_quality_score: 1.0000
+- translation_backend: openai_compatible
+- translation_backend_available: True
+- zero_score_item_count: 0
+- region_count: 8
+- zero_score_region_count: 0
+- missing_artifact_item_count: 0
+
+## Zero Score Inputs
+- none
+
+## Item Warning Counts
+- none
+
+## Region Warning Counts
+- non-editable region skipped: 5
+
+## Missing Quality Artifacts
+- none
+
+## Missing Required Artifacts
+- none
+
+## Render Artifact Counts
+- benchmarks\datasets\smoke\images\sample1.png: 0
+- benchmarks\datasets\smoke\images\sample2.jpg: 3

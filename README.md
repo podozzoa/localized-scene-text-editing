@@ -23,6 +23,14 @@ Current baseline pipeline:
 
 `OCR -> localization -> inpaint -> render -> validate`
 
+Important current-state clarification:
+
+- This is **not yet a generative STE runtime**.
+- OCR/detection uses deep-learning components, and localization can use an LLM backend.
+- Background restoration is currently OpenCV inpainting.
+- Final text synthesis is currently font/PIL rendering, not diffusion or end-to-end scene text editing.
+- Generative STE work must enter through an explicit adapter/export/candidate path before it can affect the product baseline.
+
 Implemented capabilities include:
 
 - PaddleOCR-based text detection and recognition
@@ -38,6 +46,8 @@ Implemented capabilities include:
 
 This is a baseline path, not the final poster-localization quality target.
 
+The current baseline exists so that future generative STE candidates can be measured against a stable reference rather than replacing the product path silently.
+
 ---
 
 ## 3. Repository Structure
@@ -45,6 +55,8 @@ This is a baseline path, not the final poster-localization quality target.
 ```text
 .
 ├─ AGENTS.md
+├─ TASKS.md
+├─ DONE.md
 ├─ README.md
 ├─ requirements.txt
 ├─ app/
@@ -56,6 +68,10 @@ This is a baseline path, not the final poster-localization quality target.
 │  └─ usecases/
 ├─ assets/
 │  └─ fonts/
+├─ benchmarks/
+│  ├─ datasets/
+│  ├─ manifests/
+│  └─ golden/
 └─ docs/
    ├─ ste_experiment_design.md
    └─ harness/
@@ -71,6 +87,20 @@ This is a baseline path, not the final poster-localization quality target.
       ├─ 10_autofix_policy.md
       ├─ 11_repo_governance_schedule.md
       └─ 12_maintenance_gate_checklist.md
+├─ harness/
+│  ├─ configs/
+│  ├─ policies/
+│  ├─ runners/
+│  ├─ comparators/
+│  ├─ reports/
+│  ├─ schemas/
+│  └─ templates/
+├─ experiments/
+│  └─ loop_template/
+└─ tests/
+   ├─ unit/
+   ├─ integration/
+   └─ regression/
 ```
 
 ### Layer roles
@@ -79,6 +109,10 @@ This is a baseline path, not the final poster-localization quality target.
 - `app/infra/`: OCR, translation, image operations, rendering, style estimation
 - `app/pipeline/`: orchestration and quality validation flow
 - `app/usecases/`: batch execution, artifact export, auxiliary workflows
+- `benchmarks/`: benchmark datasets, manifests, and golden references
+- `harness/`: baseline/candidate execution wiring, comparison scripts, and reports
+- `experiments/`: loop-scoped working folders and reusable experiment scaffolds
+- `tests/`: low-cost unit, integration, and regression safety checks
 - `docs/`: design intent, harness policy, governance, loop guidance
 
 ---
@@ -99,7 +133,25 @@ This order matters because the repository is now intended to be operated with ex
 
 ---
 
-## 5. Runtime Requirements
+## 5. Mandatory Task Logging
+
+All meaningful repository work must be tracked through the two root files below:
+
+- `TASKS.md`: active work board, plan, status, validation plan, feedback, and risks
+- `DONE.md`: completion log with summary, verification, and follow-up notes
+
+Required workflow:
+
+1. Before starting work, add or update the task in `TASKS.md`.
+2. Keep task status current while implementing.
+3. When the task finishes, mark it in `TASKS.md` and append the result to `DONE.md`.
+4. If verification was skipped or partial, state that explicitly.
+
+This is a repository rule, not an optional habit. The goal is to keep every change inspectable and reviewable under the harness-first operating model.
+
+---
+
+## 6. Runtime Requirements
 
 ### Python
 
@@ -134,7 +186,7 @@ If your environment already has a separate requirement file for local translatio
 
 ---
 
-## 6. Fonts
+## 7. Fonts
 
 Font files are intentionally not bundled in this repository.
 
@@ -149,7 +201,7 @@ Example Windows font paths often used during experiments:
 
 ---
 
-## 7. Single Image Execution
+## 8. Single Image Execution
 
 ```bash
 python -m app.main \
@@ -171,7 +223,7 @@ python -m app.main \
 
 ---
 
-## 8. Batch Execution
+## 9. Batch Execution
 
 ```bash
 python -m app.main \
@@ -193,7 +245,7 @@ outputs/_batch_reports/
 
 ---
 
-## 9. Translation Provider Behavior
+## 10. Translation Provider Behavior
 
 ### `auto`
 If `OPENAI_API_KEY` or `TRANSLATION_API_KEY` is available, the app tries an OpenAI-compatible translation backend.
@@ -230,7 +282,7 @@ Currently referenced language codes in this repo include:
 
 ---
 
-## 10. Output Artifacts
+## 11. Output Artifacts
 
 For a single input image, outputs are written under:
 
@@ -252,7 +304,7 @@ These artifacts are important. They are not just debug leftovers; they are part 
 
 ---
 
-## 11. STE Dataset Export
+## 12. STE Dataset Export
 
 You can export an STE-oriented dataset package while preserving the existing baseline path.
 
@@ -296,6 +348,21 @@ The manifest records information such as:
 
 This export is the bridge between the stable baseline and later STE model experimentation.
 
+Current status:
+
+- implemented: crop/mask/context export for editable regions
+- implemented: target text, candidate text, region geometry, confidence, and style metadata in `ste_manifest.json`
+- not implemented yet: a production generative STE model adapter
+- not implemented yet: diffusion/AnyText-style output selection in the baseline path
+
+Expected next integration shape:
+
+1. Keep the classical baseline as the reference path.
+2. Add a research-track STE adapter that consumes `ste_manifest.json`.
+3. Store STE-generated candidates beside baseline artifacts.
+4. Compare baseline renderer output vs STE output under the same harness policy.
+5. Promote only after text correctness, visual preservation, artifact completeness, and benchmark gates pass.
+
 See also:
 
 - `docs/ste_experiment_design.md`
@@ -326,7 +393,95 @@ Key themes:
 
 ---
 
-## 13. Practical Codex / Agent Guidance
+## 13. Harness Quick Start
+
+Example baseline run wiring:
+
+```bash
+python harness/runners/run_baseline.py --config harness/configs/baseline.json
+```
+
+Example candidate run wiring:
+
+```bash
+python harness/runners/run_candidate.py --config harness/configs/candidate.example.json --run-name candidate_smoke
+```
+
+Compare two completed runs:
+
+```bash
+python harness/comparators/compare_runs.py \
+  --baseline outputs/harness/baseline/run_result.json \
+  --candidate outputs/harness/candidate_smoke/run_result.json \
+  --output outputs/harness/comparisons/baseline_vs_candidate.json \
+  --policy harness/policies/gate_default.json
+```
+
+Build a markdown report:
+
+```bash
+python harness/reports/build_report.py \
+  --comparison outputs/harness/comparisons/baseline_vs_candidate.json \
+  --output outputs/harness/comparisons/baseline_vs_candidate.md
+```
+
+Build a promotion recommendation:
+
+```bash
+python harness/comparators/select_winner.py \
+  --comparison outputs/harness/comparisons/baseline_vs_candidate.json \
+  --output outputs/harness/comparisons/baseline_vs_candidate.recommendation.json
+```
+
+Each harness run now records:
+
+- config snapshot
+- benchmark snapshot
+- git commit / dirty state when available
+- failure summary derived from batch execution
+- schema validation before writing run and comparison artifacts
+
+Available gate policy examples:
+
+- `harness/policies/gate_default.json`
+- `harness/policies/gate_explore.json`
+
+Each run directory also stores a `_snapshots/` folder with copied config and benchmark manifest inputs.
+
+---
+
+## 14. Test Quick Start
+
+Run the current lightweight safety tests:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
+```
+
+Current test focus:
+
+- domain contract stability
+- low-cost batch runner integration behavior
+- fake-based pipeline regression smoke
+
+---
+
+## 15. Experiment Loop Scaffold
+
+Use `experiments/loop_template/` as the starting point for a new loop folder.
+
+Recommended flow:
+
+1. create `experiments/<loop_id>/`
+2. copy the template files into that folder
+3. record the loop plan before implementation
+4. run baseline and candidate through the harness
+5. attach comparison, report, and recommendation outputs to the loop folder
+6. record regressions and winning cases before promotion decisions
+
+---
+
+## 16. Practical Codex / Agent Guidance
 
 When using Codex or a CLI coding agent on this repo:
 
@@ -350,7 +505,7 @@ The repo is not fully automated yet, but the document structure is prepared for 
 
 ---
 
-## 14. Current Limitations
+## 17. Current Limitations
 
 This baseline still has important limitations, including but not limited to:
 
@@ -365,7 +520,7 @@ These are expected limitations of the current baseline. The harness structure ex
 
 ---
 
-## 15. What Not To Optimize Prematurely
+## 18. What Not To Optimize Prematurely
 
 Unless explicitly required, do not prioritize:
 
@@ -379,14 +534,15 @@ The first priority is reliable quality improvement under measurable governance.
 
 ---
 
-## 16. Next Recommended Steps
+## 19. Next Recommended Steps
 
 If continuing this project, the most reasonable next steps are:
 
-1. add machine-readable harness policy files,
-2. add benchmark datasets and split definitions,
-3. formalize regression reports,
-4. add maintenance-agent automation,
-5. separate product-track adapters from STE research adapters more explicitly.
+1. expand benchmark datasets and split definitions beyond the initial smoke set,
+2. add a research-track STE adapter that consumes exported crop/mask/target-text packages,
+3. add visual comparison metrics for background cleanliness, typography fit, and design preservation,
+4. compare baseline renderer output vs STE candidate output under the harness,
+5. add policy coverage for more of the merge-gate checklist,
+6. add maintenance-agent automation.
 
 This repository should be treated as a baseline system entering long-term disciplined development, not as a throwaway prototype.

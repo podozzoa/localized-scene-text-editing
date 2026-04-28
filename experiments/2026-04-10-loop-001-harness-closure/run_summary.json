@@ -1,0 +1,10 @@
+{
+  "loop_id": "2026-04-10-loop-001-harness-closure",
+  "status": "hold",
+  "overall_score_delta": 0.0,
+  "critical_failures": 0,
+  "regression_count": 0,
+  "manual_review_count": 0,
+  "decision": "hold",
+  "next_loop": "quality-targeted candidate loop"
+}

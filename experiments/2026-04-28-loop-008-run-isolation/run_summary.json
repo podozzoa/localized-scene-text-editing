@@ -1,0 +1,16 @@
+{
+  "loop_id": "2026-04-28-loop-008-run-isolation",
+  "status": "completed",
+  "decision": "promote",
+  "baseline_run": "loop008_baseline_isolated",
+  "candidate_run": "loop008_candidate_isolated",
+  "baseline_average_quality_score": 1.0,
+  "candidate_average_quality_score": 1.0,
+  "average_quality_delta": 0.0,
+  "zero_score_item_count": 0,
+  "target_text_script_mismatch_count": 0,
+  "gate_status": "promote",
+  "promotion_status": "promote",
+  "blocking_reasons": [],
+  "next_loop": "Expand benchmark depth or add stricter visual artifact/report checks before renderer-quality work."
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HarnessComparisonResult",
+  "type": "object",
+  "required": [
+    "baseline_run",
+    "candidate_run",
+    "created_at",
+    "policy",
+    "summary",
+    "gate",
+    "benchmark_readiness",
+    "category_summaries",
+    "critical_summary",
+    "item_deltas"
+  ],
+  "properties": {
+    "baseline_run": {
+      "type": "string"
+    },
+    "candidate_run": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "policy": {
+      "type": "object"
+    },
+    "gate": {
+      "type": "object"
+    },
+    "benchmark_readiness": {
+      "type": "object"
+    },
+    "category_summaries": {
+      "type": "array"
+    },
+    "critical_summary": {
+      "type": "object"
+    },
+    "item_deltas": {
+      "type": "array"
+    }
+  }
+}

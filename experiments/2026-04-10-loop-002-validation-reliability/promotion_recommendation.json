@@ -1,0 +1,8 @@
+{
+  "baseline_run": "loop002_baseline",
+  "candidate_run": "loop002_candidate_validation",
+  "policy_id": "gate-default-v1",
+  "promotion_status": "promote",
+  "blocking_reasons": [],
+  "required_followups": []
+}

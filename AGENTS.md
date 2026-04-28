@@ -111,6 +111,15 @@ When working in this repo, Codex should follow this order:
 6. Keep CLI behavior backward compatible unless the task explicitly changes it
 7. Prefer adding tests, validation hooks, artifact logging, or structured outputs over silent logic changes
 
+### Mandatory Work Logging
+- `TASKS.md` and `DONE.md` are mandatory operating files at the repository root.
+- Before starting any meaningful task, create or update an entry in `TASKS.md`.
+- A task entry must include scope, status, plan, validation, and feedback/risks.
+- While working, keep the task status current as `todo`, `in_progress`, `blocked`, or `done`.
+- When a task is completed, update `TASKS.md` and append a completion note to `DONE.md`.
+- Do not perform silent work that is not reflected in these files.
+- If validation is skipped, the reason must be written explicitly in the task record.
+
 ---
 
 ## Required Harness Documents

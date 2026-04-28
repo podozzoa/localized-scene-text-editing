@@ -1,0 +1,8 @@
+{
+  "baseline_run": "loop010_baseline_ste_alignment",
+  "candidate_run": "loop010_candidate_ste_alignment",
+  "policy_id": "gate-default-v1",
+  "promotion_status": "promote",
+  "blocking_reasons": [],
+  "required_followups": []
+}

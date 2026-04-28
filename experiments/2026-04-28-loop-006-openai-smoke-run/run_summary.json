@@ -1,0 +1,14 @@
+{
+  "loop_id": "2026-04-28-loop-006-openai-smoke-run",
+  "status": "promote",
+  "baseline_run": "loop006_baseline_openai",
+  "candidate_run": "loop006_candidate_openai",
+  "translation_backend": "openai_compatible",
+  "baseline_average_quality_score": 0.5,
+  "candidate_average_quality_score": 0.5,
+  "previous_known_average_quality_score": 0.0,
+  "target_text_script_mismatch_count": 0,
+  "zero_score_item_count": 1,
+  "decision": "promote",
+  "next_loop": "fix sample1 editability so headline/brand-like smoke text is not skipped"
+}

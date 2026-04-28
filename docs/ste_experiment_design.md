@@ -10,6 +10,18 @@
 
 따라서 기존 파이프라인은 유지하되, 그 위에 `STE(Scene Text Editing) 실험 경로`를 추가한다.
 
+## Current Reality Check
+
+현재 mainline은 생성형 STE 런타임이 아니다.
+
+- 딥러닝을 쓰는 부분: OCR/text detection/recognition
+- LLM을 쓸 수 있는 부분: localization/copy rewriting
+- 생성형이 아닌 부분: background restoration, final text rendering
+- 현재 배경 복원: OpenCV inpainting
+- 현재 글씨 합성: font/PIL 기반 renderer
+
+따라서 현재 결과물은 diffusion/AnyText 계열처럼 배경과 타이포그래피를 공동 생성하는 결과가 아니다. 이 문서의 목적은 그 방향으로 가기 위한 **안전한 adapter 경로와 비교 계약**을 고정하는 것이다.
+
 ## Principles
 1. 기존 파이프라인은 깨지지 않아야 한다.
 2. 특정 포스터/문구 하드코딩 없이 일반화 가능한 구조만 추가한다.
@@ -30,6 +42,8 @@
 
 ## Added STE Track
 이번 단계에서 추가하는 것은 `STE dataset export`다.
+
+이 export는 research-track 입력 패키지다. product baseline을 대체하지 않으며, 생성형 모델 결과는 반드시 candidate artifact로 저장되고 baseline과 비교되어야 한다.
 
 ### Export Inputs
 각 편집 가능 영역마다 아래 아티팩트를 만든다.
@@ -95,6 +109,31 @@ outputs/<job_name>/ste_dataset/
 2. 외부 STE 모델 결과를 동일 job 폴더에 저장
 3. OCR 재인식 + 시각 잔상 점수로 baseline과 비교
 4. headline/caption/fineprint 별로 어떤 방식이 더 유리한지 실험
+
+## Required Adapter Boundary
+
+STE adapter는 최소한 아래 입력을 받아야 한다.
+
+- `ste_manifest.json`
+- `source_image.jpg`
+- `restored_image.jpg`
+- `full_mask.png`
+- per-region source/restored/mask crops
+- target text and candidate texts
+- bbox, polygon, role, confidence, style profile
+
+STE adapter는 최소한 아래 출력을 남겨야 한다.
+
+- generated full image 또는 per-region generated crop
+- adapter metadata: model/provider/version, prompt/config, seed if available
+- failure reason when generation is skipped
+- OCR/visual validation references
+
+금지 사항:
+
+- product baseline의 `detect -> recognize -> rewrite -> restore -> render -> validate` 순서를 몰래 대체하지 않는다.
+- research runtime을 `app/pipeline` 또는 product renderer 내부에서 직접 import하지 않는다.
+- 단일 인상적 샘플만으로 benchmark gate를 우회하지 않는다.
 
 ## Scope of This Change
 이번 변경은 아래까지만 구현한다.

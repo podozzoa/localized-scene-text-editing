@@ -1,0 +1,11 @@
+{
+  "loop_id": "2026-04-15-loop-003-benchmark-curation",
+  "status": "promote",
+  "manifest_id": "smoke-v1",
+  "manifest_valid": true,
+  "ready_for_promotion": true,
+  "placeholder_expected_target_count": 0,
+  "non_approved_expected_target_count": 0,
+  "decision": "promote",
+  "next_loop": "rerun baseline and candidate harness with approved benchmark targets"
+}

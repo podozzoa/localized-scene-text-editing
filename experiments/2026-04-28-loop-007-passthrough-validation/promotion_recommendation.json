@@ -1,0 +1,15 @@
+{
+  "baseline_run": "loop007_baseline_passthrough_v2",
+  "candidate_run": "loop007_candidate_passthrough_v2",
+  "policy_id": "gate-default-v1",
+  "promotion_status": "hold",
+  "blocking_reasons": [
+    "candidate average quality score regressed below baseline",
+    "candidate contains severe item-level regressions",
+    "candidate regressed in one or more category averages"
+  ],
+  "required_followups": [
+    "inspect regressed items in the comparison report",
+    "review critical split summary before promotion"
+  ]
+}

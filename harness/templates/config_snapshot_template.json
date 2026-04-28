@@ -1,0 +1,13 @@
+{
+  "loop_id": "<loop_id>",
+  "date": "<YYYY-MM-DD>",
+  "owner": "<owner>",
+  "theme": "<theme>",
+  "baseline_version": "<baseline_version>",
+  "benchmark_set": "<benchmark_set>",
+  "dataset_manifest": "benchmarks/manifests/smoke_manifest.json",
+  "policy": "harness/policies/gate_default.json",
+  "model_version": "<model_version>",
+  "font_path": "<font_path>",
+  "deterministic": true
+}

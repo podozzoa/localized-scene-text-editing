@@ -47,6 +47,15 @@ class SimpleLocalizationRewriter(ILocalizationRewriter):
             return 0.65
         return 1.0
 
+    @classmethod
+    def _is_target_script_compatible(cls, text: str, target_lang: str) -> bool:
+        target = target_lang.lower()
+        if target != "ko" and cls._contains_script(text, 0xAC00, 0xD7A3):
+            return False
+        if target != "th" and cls._contains_script(text, 0x0E00, 0x0E7F):
+            return False
+        return True
+
     @staticmethod
     def _layout_fit_score(text: str, width: int, height: int) -> float:
         area = max(1, width * height)
@@ -85,6 +94,8 @@ class SimpleLocalizationRewriter(ILocalizationRewriter):
         unique_variants: list[str] = []
         seen = set()
         for variant in variants:
+            if not self._is_target_script_compatible(variant, target_lang):
+                continue
             if variant not in seen and variant.strip():
                 seen.add(variant)
                 unique_variants.append(variant)

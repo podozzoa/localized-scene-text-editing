@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HarnessRunResult",
+  "type": "object",
+  "required": [
+    "run_name",
+    "variant",
+    "benchmark_manifest",
+    "created_at",
+    "code_version",
+    "translation_backend",
+    "config_snapshot",
+    "benchmark_snapshot",
+    "benchmark_items",
+    "summary",
+    "failure_summary",
+    "quality_diagnosis",
+    "artifact_diagnosis",
+    "items"
+  ],
+  "properties": {
+    "run_name": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string"
+    },
+    "benchmark_manifest": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "code_version": {
+      "type": "object"
+    },
+    "translation_backend": {
+      "type": "object"
+    },
+    "config_snapshot": {
+      "type": "object"
+    },
+    "benchmark_snapshot": {
+      "type": "object"
+    },
+    "benchmark_items": {
+      "type": "array"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "failure_summary": {
+      "type": "object"
+    },
+    "quality_diagnosis": {
+      "type": "object"
+    },
+    "artifact_diagnosis": {
+      "type": "object"
+    },
+    "items": {
+      "type": "array"
+    }
+  }
+}

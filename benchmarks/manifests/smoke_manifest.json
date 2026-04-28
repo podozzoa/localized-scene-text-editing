@@ -1,0 +1,43 @@
+{
+  "manifest_id": "smoke-v1",
+  "description": "Minimal smoke benchmark manifest for harness wiring and quick baseline checks.",
+  "dataset_root": "benchmarks/datasets/smoke/images",
+  "items": [
+    {
+      "id": "sample1",
+      "image_path": "benchmarks/datasets/smoke/images/sample1.png",
+      "critical": true,
+      "expected_targets_status": "approved",
+      "source_lang": "ko",
+      "target_lang": "en",
+      "category_tags": [
+        "smoke",
+        "simple",
+        "headline"
+      ],
+      "expected_targets": [
+        "SALE 50%"
+      ],
+      "notes": "Promoted from the local sample input set for lightweight smoke validation. Expected target approved by user confirmation on 2026-04-16."
+    },
+    {
+      "id": "sample2",
+      "image_path": "benchmarks/datasets/smoke/images/sample2.jpg",
+      "critical": false,
+      "expected_targets_status": "approved",
+      "source_lang": "ko",
+      "target_lang": "en",
+      "category_tags": [
+        "smoke",
+        "complex_background",
+        "multi_region"
+      ],
+      "expected_targets": [
+        "Australia Golden Triangle 100% pure malt",
+        "This is what a clean lager tastes like!",
+        "Clean lager TERRA"
+      ],
+      "notes": "Promoted from the local sample input set for lightweight smoke validation. Expected targets approved by user confirmation on 2026-04-16."
+    }
+  ]
+}

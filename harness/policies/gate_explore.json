@@ -1,0 +1,15 @@
+{
+  "policy_id": "gate-explore-v1",
+  "description": "Looser exploratory gate policy for trying candidate variants without immediate promotion intent.",
+  "thresholds": {
+    "severe_regression_threshold": -0.08,
+    "category_regression_threshold": -0.05,
+    "block_on_average_regression": true,
+    "block_on_candidate_failure_increase": true,
+    "block_on_critical_average_regression": true,
+    "block_on_critical_severe_regression": true,
+    "block_on_item_severe_regression": false,
+    "block_on_new_failure": true,
+    "block_on_category_regression": false
+  }
+}

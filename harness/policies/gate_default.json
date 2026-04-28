@@ -1,0 +1,15 @@
+{
+  "policy_id": "gate-default-v1",
+  "description": "Default lightweight gate policy for the current smoke benchmark comparator.",
+  "thresholds": {
+    "severe_regression_threshold": -0.05,
+    "category_regression_threshold": -0.03,
+    "block_on_average_regression": true,
+    "block_on_candidate_failure_increase": true,
+    "block_on_critical_average_regression": true,
+    "block_on_critical_severe_regression": true,
+    "block_on_item_severe_regression": true,
+    "block_on_new_failure": true,
+    "block_on_category_regression": true
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "zero_score_item_count": 0,
+  "zero_score_inputs": [],
+  "item_warning_counts": {},
+  "region_count": 8,
+  "zero_score_region_count": 0,
+  "region_warning_counts": {
+    "non-editable region skipped": 5
+  },
+  "missing_quality_artifacts": [],
+  "artifact_diagnosis": {
+    "required_artifacts": [
+      "01_detected_boxes.jpg",
+      "02_ocr.json",
+      "03_mask.png",
+      "04_restored.jpg",
+      "98_quality.json",
+      "99_final.jpg"
+    ],
+    "checked_item_count": 2,
+    "complete_item_count": 2,
+    "missing_item_count": 0,
+    "missing_items": [],
+    "render_artifact_counts": {
+      "benchmarks\\datasets\\smoke\\images\\sample1.png": 0,
+      "benchmarks\\datasets\\smoke\\images\\sample2.jpg": 3
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "loop_id": "2026-04-28-loop-007-passthrough-validation",
+  "status": "completed",
+  "decision": "hold",
+  "reason": "The code change removed zero-score smoke failures, but the current candidate run regressed against baseline on sample2.jpg.",
+  "baseline_run": "loop007_baseline_passthrough_v2",
+  "candidate_run": "loop007_candidate_passthrough_v2",
+  "baseline_average_quality_score": 1.0,
+  "candidate_average_quality_score": 0.9166666666666667,
+  "average_quality_delta": -0.08333333333333326,
+  "zero_score_item_count": 0,
+  "target_text_script_mismatch_count": 0,
+  "gate_status": "reject",
+  "promotion_status": "hold",
+  "blocking_reasons": [
+    "candidate average quality score regressed below baseline",
+    "candidate contains severe item-level regressions",
+    "candidate regressed in one or more category averages"
+  ],
+  "next_loop": "Separate candidate configuration effects from product validation changes and inspect why sample2.jpg scores lower in candidate mode."
+}

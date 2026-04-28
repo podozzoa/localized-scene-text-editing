@@ -1,0 +1,22 @@
+{
+  "loop_id": "2026-04-28-loop-010-ste-alignment",
+  "status": "completed",
+  "decision": "promote",
+  "baseline_run": "loop010_baseline_ste_alignment",
+  "candidate_run": "loop010_candidate_ste_alignment",
+  "baseline_average_quality_score": 1.0,
+  "candidate_average_quality_score": 1.0,
+  "average_quality_delta": 0.0,
+  "zero_score_item_count": 0,
+  "missing_artifact_item_count": 0,
+  "gate_status": "promote",
+  "promotion_status": "promote",
+  "blocking_reasons": [],
+  "alignment_findings": [
+    "Current runtime is not a generative STE runtime.",
+    "Docs now state the classical baseline vs future STE adapter boundary explicitly.",
+    "STE dataset export contract is covered by unit tests.",
+    "Fresh smoke harness still promotes."
+  ],
+  "next_loop": "Add a research-track STE adapter skeleton that consumes ste_manifest.json and writes candidate artifacts without entering the product baseline."
+}

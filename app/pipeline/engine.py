@@ -81,6 +81,14 @@ class LocalizationEngine:
             return False, "untranslated source text"
         return True, None
 
+    def _should_validate_passthrough_text(self, text: str, target_lang: str) -> bool:
+        normalized = self._normalize_text(text)
+        if not normalized:
+            return False
+        if self._contains_placeholder_tag(normalized):
+            return False
+        return self._is_target_script_compatible(normalized, target_lang)
+
     def _classify_role(self, item: RecognizedTextRegion, image_shape: tuple[int, int, int]) -> str:
         image_height, image_width = image_shape[:2]
         x, y, w, h = item.region.bbox
@@ -316,8 +324,11 @@ class LocalizationEngine:
         job_dir = Path(prepared.job_dir)
         region_results: list[RegionEditResult] = []
         expected_texts: list[str] = []
+        validate_skipped_passthrough = not prepared.editable_regions
 
         for skipped in prepared.skipped_regions:
+            if validate_skipped_passthrough and self._should_validate_passthrough_text(skipped.text, prepared.target_lang):
+                expected_texts.append(skipped.text)
             region_results.append(
                 RegionEditResult(
                     region_id=skipped.region.id,

@@ -1,0 +1,20 @@
+{
+  "loop_id": "2026-04-20-loop-004-quality-zero-diagnosis",
+  "status": "hold",
+  "baseline_average_quality_score": 0.0,
+  "candidate_average_quality_score": 0.0,
+  "zero_score_item_count": 2,
+  "region_count": 8,
+  "zero_score_region_count": 3,
+  "dominant_region_warnings": {
+    "non-editable region skipped": 5,
+    "target text script mismatch": 3
+  },
+  "decision": "hold",
+  "fresh_run_attempt": {
+    "command": "harness/runners/run_baseline.py --config harness/configs/baseline.json --run-name loop004_baseline_approved",
+    "exit_code": 1,
+    "artifact_created": false
+  },
+  "next_loop": "target translation/editability fix candidate"
+}

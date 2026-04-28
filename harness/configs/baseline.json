@@ -1,0 +1,13 @@
+{
+  "run_name": "baseline",
+  "variant": "baseline",
+  "target_lang": "en",
+  "output_root": "outputs/harness",
+  "translation_provider": "auto",
+  "translation_model": "gpt-4.1-mini",
+  "translation_local_model": "facebook/nllb-200-distilled-600M",
+  "source_lang": "ko",
+  "ocr_lang": "korean",
+  "font_path": "assets/fonts/NotoSansKR-Regular.ttf",
+  "benchmark_manifest": "benchmarks/manifests/smoke_manifest.json"
+}

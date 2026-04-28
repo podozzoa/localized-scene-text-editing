@@ -1,0 +1,14 @@
+{
+  "manifest_id": "smoke-v1",
+  "item_count": 2,
+  "valid": true,
+  "ready_for_promotion": true,
+  "placeholder_expected_target_count": 0,
+  "placeholder_expected_target_items": [],
+  "non_approved_expected_target_count": 0,
+  "non_approved_expected_target_items": [],
+  "missing_image_count": 0,
+  "missing_image_items": [],
+  "errors": [],
+  "warnings": []
+}
